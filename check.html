@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>فحص PWA</title>
+<style>
+body{margin:0;padding:18px;font:16px/1.6 system-ui,sans-serif;background:#0b0b12;color:#fff;max-width:640px;margin-inline:auto}
+h1{font-size:1.3rem}.r{display:flex;gap:10px;padding:8px 12px;border-radius:12px;background:#1a1a26;margin:6px 0;align-items:flex-start}
+.r b{flex:none;width:1.4em}.ok b{color:#4ade80}.no b{color:#f87171}.wn b{color:#fbbf24}small{color:#9aa}
+.s{margin:14px 0 4px;color:#a78bfa;font-weight:700}a{color:#a78bfa}
+</style>
+</head>
+<body>
+<h1>فحص وتر (PWA)</h1>
+<div id="o"></div>
+<p><a href="index.html">فتح التطبيق</a></p>
+<script>
+var o=document.getElementById("o");
+function sec(t){var d=document.createElement("div");d.className="s";d.textContent=t;o.appendChild(d)}
+function add(ok,t,n){var d=document.createElement("div");d.className="r "+(ok===1?"ok":ok===0?"no":"wn");d.innerHTML="<b>"+(ok===1?"✓":ok===0?"✗":"!")+"</b><div>"+t+(n?"<br><small>"+n+"</small>":"")+"</div>";o.appendChild(d)}
+var FILES=["index.html","manifest.webmanifest","sw.js","storage.js","icon-192.png","icon-512.png","maskable-192.png","maskable-512.png","apple-touch-icon.png","favicon-32.png","check.html"];
+function img(u){return new Promise(function(r){var i=new Image();i.onload=function(){r([i.naturalWidth,i.naturalHeight])};i.onerror=function(){r(null)};i.src=u+"?c="+Date.now()})}
+(async function(){
+ sec("الملفات");
+ for(var f of FILES){try{var r=await fetch(f,{cache:"no-store"});add(r.ok?1:0,f,r.ok?(r.headers.get("content-length")||"")+" B":"HTTP "+r.status)}catch(e){add(0,f,"تعذّر الجلب")}}
+ sec("manifest");
+ var m=null;
+ try{m=await (await fetch("manifest.webmanifest",{cache:"no-store"})).json();add(1,"JSON صالح")}catch(e){add(0,"manifest غير صالح JSON")}
+ if(m){
+  ["name","short_name","start_url","scope","display","lang","dir"].forEach(function(k){add(m[k]?1:0,k+": "+(m[k]||"مفقود"))});
+  add(m.display==="standalone"?1:0,"display = standalone");
+  add(document.querySelector('link[rel=manifest]')?1:2,"رابط manifest في check.html","اختياري لهذه الصفحة");
+  var ic=m.icons||[],has={};
+  for(var x of ic){var d=await img(x.src);var ok=d&&(x.sizes==d[0]+"x"+d[1]);add(ok?1:0,x.src+" ("+x.purpose+")",d?"الحجم الفعلي "+d[0]+"×"+d[1]:"لا تُحمَّل");if(ok)has[x.sizes+x.purpose]=1}
+  add(has["192x192any"]&&has["512x512any"]?1:0,"أيقونات 192 و512 (any)");
+  add(has["192x192maskable"]&&has["512x512maskable"]?1:0,"أيقونات maskable");
+ }
+ sec("Service Worker");
+ if(!("serviceWorker" in navigator)){add(0,"المتصفح لا يدعم Service Worker")}
+ else{
+  add(isSecureContext?1:0,"سياق آمن (HTTPS أو localhost)");
+  try{
+   var reg=await navigator.serviceWorker.register("sw.js");
+   await navigator.serviceWorker.ready;add(1,"تم تسجيل sw.js","النطاق: "+reg.scope);
+   var ks=await caches.keys();add(ks.length?1:0,"الكاش: "+(ks.join("، ")||"فارغ"));
+   if(ks.length){var c=await caches.open(ks[0]),n=(await c.keys()).length;add(n>=FILES.length-1?1:2,"عدد الملفات المخزّنة: "+n)}
+   var h=await (await fetch("sw.js",{cache:"no-store"})).text();add(/addEventListener\(\s*['"]fetch['"]/.test(h)?1:0,"معالج fetch موجود");add(/^\/\/\s*version/.test(h)?1:0,"رقم النسخة في أول سطر: "+h.split("\n")[0]);
+  }catch(e){add(0,"فشل تسجيل SW",String(e))}
+ }
+ sec("التخزين");
+ try{var p=navigator.storage&&await navigator.storage.persisted();add(p?1:2,p?"التخزين دائم":"التخزين غير دائم بعد","قد يمنحه المتصفح بعد التثبيت أو كثرة الاستخدام")}catch(e){add(2,"تعذّر فحص persist")}
+ try{var db=await new Promise(function(a,b){var q=indexedDB.open("watar-ls",1);q.onsuccess=function(){a(q.result)};q.onerror=function(){b()}});add(1,"قاعدة النسخ الاحتياطي watar-ls موجودة");db.close()}catch(e){add(2,"watar-ls لم تُنشأ بعد","افتح التطبيق مرة")}
+ sec("التثبيت");
+ add(window.matchMedia("(display-mode: standalone)").matches?1:2,window.matchMedia("(display-mode: standalone)").matches?"يعمل كتطبيق مثبّت":"مفتوح في المتصفح");
+ window.addEventListener("beforeinstallprompt",function(){add(1,"المتصفح يعتبر التطبيق قابلًا للتثبيت")});
+})();
+</script>
+</body>
+</html>
