@@ -1,10 +1,10 @@
-// version: 1.0.2
-const VERSION = '1.0.2';
+// version: 1.0.3
+const VERSION = '1.0.3';
 const CACHE = 'watar-' + VERSION;
 const CORE = [
-  '/Alaa/', '/Alaa/index.html', '/Alaa/manifest.webmanifest', '/Alaa/storage.js', '/Alaa/check.html',
-  '/Alaa/icon-192.png', '/Alaa/icon-512.png', '/Alaa/maskable-192.png', '/Alaa/maskable-512.png',
-  '/Alaa/apple-touch-icon.png', '/Alaa/favicon-32.png'
+  './', './index.html', './manifest.webmanifest', './storage.js', './check.html',
+  './icon-192.png', './icon-512.png', './maskable-192.png', './maskable-512.png',
+  './apple-touch-icon.png', './favicon-32.png'
 ];
 
 self.addEventListener('install', e => {
@@ -39,8 +39,8 @@ self.addEventListener('fetch', e => {
         return r;
       }).catch(() =>
         caches.match(req, { ignoreSearch: true })
-          .then(r => r || caches.match('/Alaa/index.html'))
-          .then(r => r || caches.match('/Alaa/'))
+          .then(r => r || caches.match('./index.html'))
+          .then(r => r || caches.match('./'))
       )
     );
     return;

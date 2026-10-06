@@ -2,9 +2,9 @@
   "name": "وتر",
   "short_name": "وتر",
   "description": "مشغّل موسيقى يعمل بدون إنترنت",
-  "id": "/Alaa/",
-  "start_url": "/Alaa/",
-  "scope": "/Alaa/",
+  "id": "./index.html",
+  "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "lang": "ar",
@@ -17,25 +17,25 @@
   ],
   "icons": [
     {
-      "src": "/Alaa/icon-192.png",
+      "src": "./icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/Alaa/icon-512.png",
+      "src": "./icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/Alaa/maskable-192.png",
+      "src": "./maskable-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
     },
     {
-      "src": "/Alaa/maskable-512.png",
+      "src": "./maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
