@@ -1,5 +1,5 @@
-// version: 1.0.3
-const VERSION = '1.0.3';
+// version: 1.0.4
+const VERSION = '1.0.4';
 const CACHE = 'watar-' + VERSION;
 const CORE = [
   './', './index.html', './manifest.webmanifest', './storage.js', './check.html',

@@ -2,7 +2,7 @@
   "name": "وتر",
   "short_name": "وتر",
   "description": "مشغّل موسيقى يعمل بدون إنترنت",
-  "id": "./index.html",
+  "id": "/Alaa-/index.html?install=2",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
